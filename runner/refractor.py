@@ -1,0 +1,2 @@
+def ref(string):
+	return string.replace('+1&', '+&').replace('&', '*').replace(' -', ' - ').replace(' +', ' + ').replace('du_du_', 'd^2u_').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', 'ɣ').replace('u_', 'ū').replace(' *d', ' d').replace('+*', '').replace('1*', '').replace('+ *', '+ ').replace('- *', '- ')
