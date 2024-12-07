@@ -1,0 +1,22 @@
+name: Build and push image
+on:
+  [workflow_dispatch]
+  # push:
+  #   branches:
+  #     - master
+  # pull_request:
+  #   branches:
+  #     - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build images
+        run: docker build -t kvesten/urmat:latest .
+      - name: push
+        run: |
+          docker login --username kvesten -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push kvesten/urmat:latest
