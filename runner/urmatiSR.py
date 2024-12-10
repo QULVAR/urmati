@@ -2,7 +2,7 @@ from .matrix import matrixTrans, matrixPrint
 from .multiplication import multi, multiplyOnNumber
 from .сoeficient import getNums
 from .bringSimilar import bringSimilar
-from .refractor import ref, refBringSimilar
+from .refractor import ref, refBringSimilar, refToMarkdown, refSignes
 
 
 def urmatiSR (u, matrixInp):
@@ -33,15 +33,17 @@ def urmatiSR (u, matrixInp):
 		uddxz = ''
 		uddyz = ''
 		uddzz = ''
-	output += f'u\'x = {ref(bringSimilar(udx))}\n\n'
-	output += f'u\'y = {ref(bringSimilar(udy))}\n\n'
-	output += f'u\'z = {ref(bringSimilar(udz))}\n\n'
-	output += f'u\'\'xx = {ref(uddxx)}\n\n'
-	output += f'u\'\'xy = {ref(uddxy)}\n\n'
-	output += f'u\'\'yy = {ref(uddyy)}\n\n'
-	output += f'u\'\'xz = {ref(uddxz)}\n\n'
-	output += f'u\'\'yz = {ref(uddyz)}\n\n'
-	output += f'u\'\'zz = {ref(uddzz)}\n\n'
+	
+	output += r"\( u'_{x} = " + ref(refToMarkdown(ref(bringSimilar(udx)))) + r'\)    ' + '<br>'
+	output += r"\( u'_{y} = " + ref(refToMarkdown(ref(bringSimilar(udy)))) + r'\)    ' + '<br>'
+	output += r"\( u'_{z} = " + ref(refToMarkdown(ref(bringSimilar(udz)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{xx} = " + ref(refToMarkdown(ref(bringSimilar(uddxx)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{xy} = " + ref(refToMarkdown(ref(bringSimilar(uddxy)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{yy} = " + ref(refToMarkdown(ref(bringSimilar(uddyy)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{xz} = " + ref(refToMarkdown(ref(bringSimilar(uddxz)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{yz} = " + ref(refToMarkdown(ref(bringSimilar(uddyz)))) + r'\)    ' + '<br>'
+	output += r"\( u''_{zz} = " + ref(refToMarkdown(ref(bringSimilar(uddzz)))) + r'\)    ' + '<br>'
+
 	expressionsCases = {
 		'uxx': uddxx,
 		'uxy': uddxy,
@@ -69,9 +71,9 @@ def urmatiSR (u, matrixInp):
 				newComponent = '+' + newComponent
 		u1 += f' {newComponent}'
 	u1 = u1[1:]
-	u1Refed = ref(u1) + ' = 0'
+	u1Refed = ref(u1)
 	u2 = refBringSimilar(bringSimilar(u1))
-	u2Refed = ref(u2) + ' = 0'
-	output += f'{u1Refed}\n\n'
-	output += f'{u2Refed}'
+	u2Refed = ref(u2)
+	output += rf"\({refSignes(ref(refToMarkdown(ref(u1Refed))))} = 0\) <br>"
+	output += rf"\({refSignes(ref(refToMarkdown(ref(u2Refed))))} = 0\) <br>"
 	return output

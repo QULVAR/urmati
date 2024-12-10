@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-import json  # Для обработки POST-запросов
-from .main import urmati
 from django.views.decorators.csrf import csrf_exempt
+from markdown_katex import KatexExtension
+from markdown import markdown
+from json import loads
+from .main import urmati
 
 # Отображение HTML-страницы
 @csrf_exempt
@@ -13,15 +15,10 @@ def index(request):
 @csrf_exempt
 def run_script(request):
     if request.method == 'POST':
-        # Получаем данные из POST-запроса
-        data = json.loads(request.body)
+        data = loads(request.body)
         u = data.get('param1', '')
         matrix = data.get('param2', '')
-
-        # Выполняем логику
         result = urmati(u, matrix, 'SR')
-
-        # Возвращаем текстовый ответ, не пытаясь интерпретировать его как HTML
         return JsonResponse({'status': '', 'message': result})
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
