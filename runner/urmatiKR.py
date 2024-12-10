@@ -1,0 +1,2 @@
+def urmatiKR(u):
+	return ''

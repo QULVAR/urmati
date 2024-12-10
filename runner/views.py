@@ -19,7 +19,7 @@ def run_script(request):
         matrix = data.get('param2', '')
 
         # Выполняем логику
-        result = urmati(u, matrix)
+        result = urmati(u, matrix, 'SR')
 
         # Возвращаем текстовый ответ, не пытаясь интерпретировать его как HTML
         return JsonResponse({'status': '', 'message': result})

@@ -22,10 +22,16 @@ def getNums(ud, matrix):
 		
 		number = matrix[stringCases[component1[0]]][columnCases[component1[1]]]
 		if number != '0':
-			number = Fraction(number)
-			componentNum = Fraction(componentSplitted[0].split('&')[0])
-			result = componentSplitted[0].replace('+1', str(number * componentNum))
-			
+			numberSplit = number.split('•')
+			if len(numberSplit) == 1:
+				number = Fraction(numberSplit[0])
+				componentNum = Fraction(componentSplitted[0].split('&')[0])
+				result = componentSplitted[0].replace('+1', str(number * componentNum))
+			else:
+				
+				number = Fraction(numberSplit[0])
+				componentNum = Fraction(componentSplitted[0].split('&')[0])
+				result = componentSplitted[0].replace('+1', f'{numberSplit[1]}•{str(number * componentNum)}')
 			if not result[0] in ['+', '-']:
 				result = '+' + result
 			
