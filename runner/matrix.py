@@ -1,13 +1,5 @@
 import sympy as sp
 
-def matrixPrintMarkdown(matrix):
-    s = ''
-    for i in matrix:
-        for j in i:
-            s += f'{j}       '.replace('•sqrt(', '√').replace(')', '')
-        s += '\n'
-    return f'\n\n{s}\n\n'
-
 def matrixPrint(matrix):
     '''A_{m,n} = 
         \begin{pmatrix}
@@ -47,7 +39,11 @@ def matrixTrans(matrixInp):
     if det == 0:
         raise ValueError("Матрица необратима (определитель равен 0).")
     inverse = matrix.inv()
-    inverse_as_strings = [[str(cell) for cell in row] for row in inverse.tolist()]
-    for i in range(0, len(inverse_as_strings)):
-        inverse_as_strings[i] = list(map(lambda g: g.replace("*", "•"), inverse_as_strings[i]))
-    return inverse_as_strings
+    inverseMatrix = [[str(cell) for cell in row] for row in inverse.tolist()]
+    for i in range(0, len(inverseMatrix)):
+        inverseMatrix[i] = list(map(lambda g: g.replace("*", "•"), inverseMatrix[i]))
+    transposedInverseMatrix = [[0 for _ in range(len(inverseMatrix))] for _ in range(len(inverseMatrix))]
+    for i in range(len(inverseMatrix)):
+        for j in range(len(inverseMatrix)):
+            transposedInverseMatrix[j][i] = inverseMatrix[i][j]
+    return transposedInverseMatrix

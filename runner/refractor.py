@@ -8,9 +8,6 @@ def refSignes(string):
 
 def refBringSimilar(string):
 	stringSplitted = string.replace('*', '•').replace(' + ', ' +').replace(' - ', ' -').replace('+-', '-').replace('-+', '-').split()
-	for i in range(0, len(stringSplitted)):
-		if not '&du_' in stringSplitted[i]:
-			stringSplitted[i] = f"{stringSplitted[i]}&{stringSplitted[i+1].split('&')[1]}"
 	newString = ' '.join(stringSplitted)
 	pattern = r'(?<!\d•)([+-]sqrt\(.*?\)&\w+/[a-z]+)'
 	newStringWithCoefficients = re.sub(pattern, '+1•\\1', newString)

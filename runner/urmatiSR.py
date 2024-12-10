@@ -36,13 +36,15 @@ def urmatiSR (u, matrixInp):
 	
 	output += r"\( u'_{x} = " + ref(refToMarkdown(ref(bringSimilar(udx)))) + r'\)    ' + '<br>'
 	output += r"\( u'_{y} = " + ref(refToMarkdown(ref(bringSimilar(udy)))) + r'\)    ' + '<br>'
-	output += r"\( u'_{z} = " + ref(refToMarkdown(ref(bringSimilar(udz)))) + r'\)    ' + '<br>'
+	if len(matrix) == 3:
+		output += r"\( u'_{z} = " + ref(refToMarkdown(ref(bringSimilar(udz)))) + r'\)    ' + '<br>'
 	output += r"\( u''_{xx} = " + ref(refToMarkdown(ref(bringSimilar(uddxx)))) + r'\)    ' + '<br>'
 	output += r"\( u''_{xy} = " + ref(refToMarkdown(ref(bringSimilar(uddxy)))) + r'\)    ' + '<br>'
 	output += r"\( u''_{yy} = " + ref(refToMarkdown(ref(bringSimilar(uddyy)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{xz} = " + ref(refToMarkdown(ref(bringSimilar(uddxz)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{yz} = " + ref(refToMarkdown(ref(bringSimilar(uddyz)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{zz} = " + ref(refToMarkdown(ref(bringSimilar(uddzz)))) + r'\)    ' + '<br>'
+	if len(matrix) == 3:
+		output += r"\( u''_{xz} = " + ref(refToMarkdown(ref(bringSimilar(uddxz)))) + r'\)    ' + '<br>'
+		output += r"\( u''_{yz} = " + ref(refToMarkdown(ref(bringSimilar(uddyz)))) + r'\)    ' + '<br>'
+		output += r"\( u''_{zz} = " + ref(refToMarkdown(ref(bringSimilar(uddzz)))) + r'\)    ' + '<br>'
 
 	expressionsCases = {
 		'uxx': uddxx,
@@ -62,7 +64,11 @@ def urmatiSR (u, matrixInp):
 	u1 = ''
 	print()
 	for component in u.split():
-		number, key = component.split('*')
+		if component[1] == 'u':
+			number, key = list(component)
+			number += '1'
+		else:
+			number, key = component.split('*')
 		if key != 'u':
 			newComponent = multiplyOnNumber(expressionsCases[key], number)
 		else:
