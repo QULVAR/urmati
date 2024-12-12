@@ -16,7 +16,8 @@ def run_script(request):
         data = loads(request.body)
         u = data.get('param1', '')
         matrix = data.get('param2', '')
-        result = urmati(u, matrix, 'SR')
+        mode = data.get('mode', '')
+        result = urmati(u, matrix, mode)
         return JsonResponse({'status': '', 'message': result})
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

@@ -12,5 +12,3 @@ def urmati(u, matrixInp, mode):
 		return urmatiSR(u, matrixInp)
 	elif mode == 'KR':
 		return urmatiKR(u)
-	else:
-		return 'No such number'

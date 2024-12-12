@@ -1,2 +1,2 @@
 def urmatiKR(u):
-	return ''
+	return 'In development'
