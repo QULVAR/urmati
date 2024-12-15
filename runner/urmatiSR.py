@@ -1,13 +1,18 @@
 from .matrix import matrixTrans, matrixPrint
-from .multiplication import multi, multiplyOnNumber
+from .multiplication import multi
 from .сoeficient import getNums
 from .bringSimilar import bringSimilar
-from .refractor import ref, refBringSimilar, refToMarkdown, refSignes
+from .refractor import ref, refBringSimilar, refToMarkdown
 
 
-def urmatiSR (u, matrixInp):
+def urmatiSR (u, matrixInp, flag = True):
 	output = ''
-	matrix = matrixTrans(matrixInp)
+	if flag:
+		matrix = matrixTrans(matrixInp)
+	else:
+		matrix = [[], []]
+		for i in range(len(matrixInp.split('?'))):
+			matrix[i].extend(matrixInp.split('?')[i].split())
 	output += matrixPrint(matrix)
 	if len(matrix) > 2:
 		udxFormula = '+1&du_/da*da/dx +1&du_/db*db/dx +1&du_/dc*dc/dx'
@@ -33,18 +38,17 @@ def urmatiSR (u, matrixInp):
 		uddxz = ''
 		uddyz = ''
 		uddzz = ''
-	
-	output += r"\( u'_{x} = " + ref(refToMarkdown(ref(bringSimilar(udx)))) + r'\)    ' + '<br>'
-	output += r"\( u'_{y} = " + ref(refToMarkdown(ref(bringSimilar(udy)))) + r'\)    ' + '<br>'
+	output += r"\( u'_{x} = " + ref(refToMarkdown(udx)) + r'\)    ' + '<br>'
+	output += r"\( u'_{y} = " + ref(refToMarkdown(udy)) + r'\)    ' + '<br>'
 	if len(matrix) == 3:
-		output += r"\( u'_{z} = " + ref(refToMarkdown(ref(bringSimilar(udz)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{xx} = " + ref(refToMarkdown(ref(bringSimilar(uddxx)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{xy} = " + ref(refToMarkdown(ref(bringSimilar(uddxy)))) + r'\)    ' + '<br>'
-	output += r"\( u''_{yy} = " + ref(refToMarkdown(ref(bringSimilar(uddyy)))) + r'\)    ' + '<br>'
+		output += r"\( u'_{z} = " + ref(refToMarkdown(udz)) + r'\)    ' + '<br>'
+	output += r"\( u''_{xx} = " + ref(refToMarkdown(uddxx)) + r'\)    ' + '<br>'
+	output += r"\( u''_{xy} = " + ref(refToMarkdown(uddxy)) + r'\)    ' + '<br>'
+	output += r"\( u''_{yy} = " + ref(refToMarkdown(uddyy)) + r'\)    ' + '<br>'
 	if len(matrix) == 3:
-		output += r"\( u''_{xz} = " + ref(refToMarkdown(ref(bringSimilar(uddxz)))) + r'\)    ' + '<br>'
-		output += r"\( u''_{yz} = " + ref(refToMarkdown(ref(bringSimilar(uddyz)))) + r'\)    ' + '<br>'
-		output += r"\( u''_{zz} = " + ref(refToMarkdown(ref(bringSimilar(uddzz)))) + r'\)    ' + '<br>'
+		output += r"\( u''_{xz} = " + ref(refToMarkdown(uddxz)) + r'\)    ' + '<br>'
+		output += r"\( u''_{yz} = " + ref(refToMarkdown(uddyz)) + r'\)    ' + '<br>'
+		output += r"\( u''_{zz} = " + ref(refToMarkdown(uddzz)) + r'\)    ' + '<br>'
 
 	expressionsCases = {
 		'uxx': uddxx,
@@ -62,7 +66,6 @@ def urmatiSR (u, matrixInp):
 		'u': 'u_'
 	}
 	u1 = ''
-	print()
 	for component in u.split():
 		if component[1] == 'u':
 			number, key = list(component)
@@ -70,16 +73,17 @@ def urmatiSR (u, matrixInp):
 		else:
 			number, key = component.split('*')
 		if key != 'u':
-			newComponent = multiplyOnNumber(expressionsCases[key], number)
+			newComponent = multi(expressionsCases[key], number)
 		else:
 			newComponent = f'{number}&{expressionsCases[key]}'
 			if not newComponent[0] in ['+', '-']:
 				newComponent = '+' + newComponent
 		u1 += f' {newComponent}'
 	u1 = u1[1:]
-	u1Refed = ref(u1)
 	u2 = refBringSimilar(bringSimilar(u1))
-	u2Refed = ref(u2)
-	output += rf"\({refSignes(ref(refToMarkdown(ref(u1Refed))))} = 0\) <br>"
-	output += rf"\({refSignes(ref(refToMarkdown(ref(u2Refed))))} = 0\) <br>"
-	return output
+	output += rf'\( {ref(refToMarkdown(u1))} = 0 \) <br>'
+	output += rf'\( {ref(refToMarkdown(u2))} = 0 \) <br>'
+	if flag:
+		return output
+	else:
+		return output, u2

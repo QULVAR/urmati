@@ -13,7 +13,6 @@
         }
         input,
         form{
-/*          width: 100%;*/
             padding: 5px;
             font-size: 15px;
         }
@@ -45,7 +44,7 @@
     </style>
 </head>
 <body>
-    <h1>Run Script</h1>
+    <h1>Приведение УЧП</h1>
     <form id="script-form">
         <label>
             <input type="radio" id="SR" name="mode" value="SR" checked="true">
@@ -56,24 +55,32 @@
             Контрольная
         </label><br>
         <label>
-            Parameter 1:
-            <input type="text" id="param1" name="param1" placeholder="Enter first parameter" required>
+            Условие:
+            <input type="text" id="param1" name="param1" required placeholder="+1*uxx +2*uxy +2*uyy +4*uyz +5*uzz +1*ux +1*uy">
         </label>
         <br>
         <label id="p2">
-            Parameter 2:
-            <input type="text" id="param2" name="param2" placeholder="Enter second parameter" required>
+            Матрица A:
+            <input type="text" id="param2" name="param2" placeholder="1 -3/2 0?0 1/2 2**0.5?0 0 1" required>
         </label>
         <br><br>
-        <button type="submit">Run Script</button>
+        <button type="submit">Решить</button>
     </form>
 
-    <h2>Result:</h2>
+    <h2>Решение</h2>
     <div id="result"></div>
 
     <script>
         $('input[type="radio"]').on('click', function() {
-            (this.id == 'SR' && this.checked) ? $('#p2').removeClass('hidden') : $('#p2').addClass('hidden');
+            if(this.id == 'SR' && this.checked){
+                $('#p2').removeClass('hidden');
+                $('#p2 input').attr('required', true);
+                $('#p2 input').val('');
+            } else {
+                $('#p2').addClass('hidden');
+                $('#p2 input').attr('required', false);
+                $('#p2 input').val('');
+            }
         })
         const form = document.getElementById('script-form');
         const result = document.getElementById('result');
