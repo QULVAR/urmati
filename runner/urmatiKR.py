@@ -1,7 +1,8 @@
 from fractions import Fraction
 from sympy import sqrt, I, simplify, Rational, symbols, sympify
 from .bringSimilar import bringSimilar
-from .refractor import refBringSimilar, refToMarkdown, ref
+from .multiplication import multi
+from .refractor import refBringSimilar, refToMarkdown, ref, refFractions, refChangeFractions
 from .urmatiSR import urmatiSR
 
 def determinant(a):
@@ -126,6 +127,14 @@ def urmatiKR(u):
 	digits = [str(i) for i in range(0, 10)]
 	y1 = y1.replace(' ', '').replace('-', ' -').replace('+', ' +').split()
 	for i in range(len(y1)):
+		if 'x/' in y1[i] or 'y/' in y1[i]:
+			char = '+'
+			if y1[i][0] in ['+', '-']:
+				char = y1[i][0]
+				y1[i] = y1[i][1:]
+			frac = y1[i].split('/')
+			y1[i] = char + '1/' + frac[1] + '*' + frac[0]
+	for i in range(len(y1)):
 		if not y1[i][0] in ['+', '-']:
 			y1[i] = '+' + y1[i][0]
 		if not y1[i][1] in digits:
@@ -139,7 +148,6 @@ def urmatiKR(u):
 			if not y2[i][1] in digits:
 				y2[i] = y2[i][0] + '1*' + y2[i][1:]
 		y2 = ' '.join(y2)
-	
 	f = 0
 	g = 0
 	A = [['0', '0'], ['0', '0']]
@@ -224,5 +232,37 @@ def urmatiKR(u):
 \right.
 \end{equation} \) <br>'''
 	res = urmatiSR(u, '?'.join(map(lambda g: ' '.join(g), A)), False)
-	output += res[0].replace('(A^{-1})^{T}', 'A') + '<br>'
+	output += res[0].replace('(A^{-1})^{T}', 'A')
+	u_ = res[1]
+	constant = u_.split()[0].split("&")[0]
+	output += fr'\( \quad | \; : {constant} \) <br>'
+	u_ = refChangeFractions(refBringSimilar(bringSimilar(multi(u_, f'({constant})**-1').replace('sqrt', '•sqrt'))))
+	print(u_)
+	output += r'\(' + ref(refToMarkdown(u_)) + r' = 0 \) <br>'
+	output += r'''\( \left\langle
+\begin{array}{c}
+ū(\alpha, \beta) = w(\alpha, \beta) * e^{\lambda \alpha + \mu \beta}
+\end{array}
+\right\rangle \) <br>'''
+	#lambda = v
+	#meow = n
+	replacements = {
+		'u_': '+1&w',
+		'du_/da': '+1&dw/da +v&w',
+		'du_du_/dada': '+1&dwdw/dada +2*v&dw/da +v*v&w',
+		'du_/db': '+1&dw/db +n&w',
+		'du_du_/dbdb': '+1&dwdw/dbdb +2*n&dw/db +n*n&w',
+		'du_du_/dadb': '+1&dwdw/dadb +n&dw/da +v&dw/db +v*n&w'
+	}
+	newU = ''
+	for i in u_.split():
+		constant, function = i.split('&')
+		newUNewElement = refBringSimilar(bringSimilar(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt')), False, True)
+		char = '+'
+		if newUNewElement[0] in ['+', '-']:
+			char = newUNewElement[0]
+			newUNewElement = newUNewElement[1:]
+		newU += ' ' + char + newUNewElement
+	newU = refChangeFractions(newU[1:].replace('v••2', 'v•v').replace('n••2', 'n•n').replace('•', '*'))
+	output += r'\( (' + ref(refToMarkdown(newU)) + r') * e^{\lambda \alpha + \mu \beta} = 0 \quad | \; : e^{\lambda \alpha + \mu \beta} \) <br>'
 	return output

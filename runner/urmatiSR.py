@@ -82,7 +82,7 @@ def urmatiSR (u, matrixInp, flag = True):
 	u1 = u1[1:]
 	u2 = refBringSimilar(bringSimilar(u1))
 	output += rf'\( {ref(refToMarkdown(u1))} = 0 \) <br>'
-	output += rf'\( {ref(refToMarkdown(u2))} = 0 \) <br>'
+	output += rf'\( {ref(refToMarkdown(u2))} = 0 \)'
 	if flag:
 		return output
 	else:

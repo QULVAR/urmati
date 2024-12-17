@@ -1,6 +1,6 @@
 from fractions import Fraction
 from sympy import symbols, sympify
-from .multiplication import multi
+from .refractor import refFractions
 
 def getNums(ud, matrix):
 	columnCases = {
@@ -37,4 +37,4 @@ def getNums(ud, matrix):
 			if not result[0] in ['+', '-']:
 				result = '+' + result
 			udNum += ' ' + result
-	return udNum[1:]
+	return refFractions(udNum[1:])

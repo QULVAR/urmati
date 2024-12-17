@@ -1,6 +1,7 @@
 import sympy as sp
 
 def bringSimilar(expression):
+    n, v = sp.symbols('n v')
     terms = expression.split(' ')
     grouped_terms = {}
     for term in terms:

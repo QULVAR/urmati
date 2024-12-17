@@ -2,16 +2,74 @@ import re
 from sympy import latex
 
 def ref(string):
-	string = string.replace(' ', '').replace('frac', '????').replace('+1&', '+&').replace('&', '*').replace('-+', '-').replace('+-', '-').replace('++', '+').replace('++', '+').replace('+*+', '*').replace(' -', ' - ').replace('+', ' + ').replace('du_du_', 'd^2u_').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', '\\gamma').replace(' *d', ' d').replace('*u', 'u').replace('u_', 'ū').replace('1*', '').replace('????', 'frac').replace('gαmmα', 'gamma').replace('d', '\partial').replace('pαrtiαl', 'partial').replace('*\\', '\\')
+	string = string.replace(' ', '').replace('frac', '????').replace('+1&', '+&').replace('&', '*').replace('-+', '-').replace('+-', '-').replace('++', '+').replace('++', '+').replace('+*+', '*').replace(' -', ' - ').replace('+', ' + ').replace('du_du_', 'd^2u_').replace('dwdw', 'd^2w').replace('dw', 'd w').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', '\\gamma').replace(' *d', ' d').replace('*u', 'u').replace('u_', 'ū').replace('1*', '').replace('????', 'frac').replace('gαmmα', 'gamma').replace('d', '\partial').replace('pαrtiαl', 'partial').replace('*\\', '\\').replace('v*v', 'v^2').replace('n*n', 'n^2').replace('v', '\\lambda').replace('n', '\\mu')
 	if string[:3] == ' + ':
 		string = string[3:]
 	return string
 
-def refBringSimilar(string, flag = True):
+def refFractions(string):
+	digits = [str(i) for i in range(10)]
+	stringSplitted = string.replace('/d', 'od').split()
+	for i in range(len(stringSplitted)):
+		if 'oda/' in stringSplitted[i] or 'odb/' in stringSplitted[i] or 'odbdb/' in stringSplitted[i] or 'odada/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'u_/' in stringSplitted[i] or ('w/' in stringSplitted[i] and not 'dw/' in stringSplitted[i]):
+			parts = stringSplitted[i].split('/')
+			if '&' in parts[0]:
+				parts[0] = parts[0].split('&')
+				parts[0][0] += '/' + parts.pop(-1)
+			else:
+				char = '+'
+				parts[0] = parts[0].split('&')
+				if parts[0][0][0] in ['+', '-']:
+					char = parts[0][0][0]
+					parts[0][0] = parts[0][0][1:]
+				parts[0].append(char + '1')
+				parts[0] = parts[0][::-1]
+				parts[0][0] += '/' + parts.pop(-1)
+			char = '+'
+			if parts[0][0][0] in ['+', '-']:
+				char = parts[0][0][0]
+				parts[0][0] = parts[0][0][1:]
+			if not parts[0][0][0] in digits:
+				if parts[0][0][0] in ['n', 'v']:
+					constant = parts[0][0][0]
+					parts[0][0] = constant + '*1' + parts[0][0][1:]
+				else:
+					parts[0][0] = '1' + parts[0][0]
+			if parts[0][0][0] in ['n', 'v']:
+				if '*' in parts[0][0]:
+					parts[0][0] = '*'.join(parts[0][0].split('*')[::-1])
+			stringSplitted[i] = char + parts[0][0] + '&' + parts[0][1]
+	return ' '.join(stringSplitted).replace('o', '/')
+
+def refChangeFractions(string):
+	digits = [str(i) for i in range(10)]
+	stringSplitted = string.replace('/d', 'od').split()
+	for i in range(len(stringSplitted)):
+		if '/' in stringSplitted[i]:
+			parts = stringSplitted[i].split('/')
+			char = '+'
+			if parts[0][0] in ['+', '-']:
+				char = parts[0][0]
+				parts[0] = parts[0][1:]
+			if '*' in parts[0]:
+				if parts[0][0] in digits:
+					if parts[0].split('*')[-1] in ['n', 'v'] or 'sqrt' in parts[0].split('*')[-1]:
+						parts[0] = '*'.join(parts[0].split('*')[::-1])
+			elif parts[0][0] in ['n', 'v'] or 'sqrt' in parts[0]:
+				parts[0] = parts[0] + '*1'
+			parts[0] = char + parts[0]
+			stringSplitted[i] = '/'.join(parts)
+	return ' '.join(stringSplitted).replace('o', '/')
+
+def refBringSimilar(string, flag = True, w = False):
 	stringSplitted = string.replace('*', '•').replace(' + ', ' +').replace(' - ', ' -').replace('+-', '-').replace('-+', '-').split()
 	if flag:
 		for i in range(0, len(stringSplitted)):
 				if not ('&du_' in stringSplitted[i] or '&u_' in stringSplitted[i]):
+					stringSplitted[i] = f"{stringSplitted[i]}&{stringSplitted[i+1].split('&')[1]}"
+	if w:
+		for i in range(0, len(stringSplitted)):
+				if not ('&dw' in stringSplitted[i] or '&w' in stringSplitted[i]):
 					stringSplitted[i] = f"{stringSplitted[i]}&{stringSplitted[i+1].split('&')[1]}"
 	newString = ' '.join(stringSplitted)
 	pattern = r'(?<!\d•)([+-]sqrt\(.*?\)&\w+/[a-z]+)'

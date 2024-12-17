@@ -19,11 +19,15 @@ def matrixPrint(matrix):
                 splitted = j.split('•')
                 if '/' in splitted[0]:
                     splittedNum = splitted[0].split('/')
-                    output+= r'\frac{' + fr'{splittedNum[0]}' + r'}{' + fr'{splittedNum[1]}' + fr'{splitted[1]} &'
+                    output+= r'\frac{' + fr'{splittedNum[0]}' + r'}{' + fr'{splittedNum[1]}' + '}' + fr'{splitted[1]} &'
                 else:
                     output+= rf'{splitted[0]}' + fr'{splitted[1]} &'.replace('•', '\\')
             else:
-                output+= rf'{j} &'
+                if '/' in j:
+                    splittedNum = j.split('/')
+                    output+= r'\frac{' + fr'{splittedNum[0]}' + r'}{' + fr'{splittedNum[1]}' + r'} &'
+                else:
+                    output+= rf'{j} &'
         output = output[:-2] + '\\\\\n'
     output = output[:-3] + r'\end{pmatrix}'
     output = output.replace('sqrt', '\\sqrt').replace('(', '{').replace(')', '}')
