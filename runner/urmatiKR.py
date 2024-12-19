@@ -269,7 +269,6 @@ def urmatiKR(u):
 	newU = ''
 	for i in u_.split():
 		constant, function = i.split('&')
-		print(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt'))
 		newUNewElement = refBringSimilar(bringSimilar(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt')), False, True)
 		char = '+'
 		if newUNewElement[0] in ['+', '-']:
