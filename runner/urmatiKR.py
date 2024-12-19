@@ -237,8 +237,20 @@ def urmatiKR(u):
 	constant = u_.split()[0].split("&")[0]
 	output += fr'\( \quad | \; : {constant} \) <br>'
 	u_ = refChangeFractions(refBringSimilar(bringSimilar(multi(u_, f'({constant})**-1').replace('sqrt', '•sqrt'))))
-	print(u_)
 	output += r'\(' + ref(refToMarkdown(u_)) + r' = 0 \) <br>'
+	constants = {
+		'du_/da': '',
+		'du_/db': '',
+		'u_': ''
+	}
+	for i in u_.split():
+		const, diff = i.split('&')
+		if diff in list(constants.keys()):
+			constants[diff] += ' ' + const
+			constants[diff] = constants[diff].strip()
+	c = [constants['du_/da'], constants['du_/db'], constants['u_']]
+	c = list(map(lambda g: '0' if g == '' else g, c))
+	c1, c2, c3 = c
 	output += r'''\( \left\langle
 \begin{array}{c}
 ū(\alpha, \beta) = w(\alpha, \beta) * e^{\lambda \alpha + \mu \beta}
@@ -265,4 +277,58 @@ def urmatiKR(u):
 		newU += ' ' + char + newUNewElement
 	newU = refChangeFractions(newU[1:].replace('v••2', 'v•v').replace('n••2', 'n•n').replace('•', '*'))
 	output += r'\( (' + ref(refToMarkdown(newU)) + r') * e^{\lambda \alpha + \mu \beta} = 0 \quad | \; : e^{\lambda \alpha + \mu \beta} \) <br>'
+	diffs = {
+		'dwdw/dada': '',
+		'dwdw/dadb': '',
+		'dwdw/dbdb': '',
+		'dw/da': '',
+		'dw/db': '',
+		'w': ''
+	}
+	for i in newU.split():
+		const, diff = i.split('&')
+		diffs[diff] += ' ' + const
+		diffs[diff] = diffs[diff].strip()
+	newU = ''
+	for key, expression in diffs.items():
+		if expression != '':
+			newU += f' +1*({expression})&{key}'.replace('*(+1)', '').replace('(+', '(')
+	newU = newU[1:]
+	output += r'\( ' + ref(refToMarkdown(newU)) + r' = 0 \) <br>'
+	v, n = '', ''
+	output += r'''\( \left\langle
+\begin{array}{c}'''
+	if diffType == 0: #параболический
+		n = str(sympify(f' - {c2} / 2'))
+		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + c2 + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
+		v = str(sympify(f'({c2}**2)/(4*{c1}) - ({c3})/({c1})'))
+		output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + c2 + ')^2}{4*' + c1 + '} = ' + ref(refToMarkdown(v)) + '\n'
+	elif diffType == 1: #эллиптический
+		v = str(sympify(f' - {c1} / 2'))
+		output += r'\lambda = - \frac{C_1}{2} = ' + r'- \frac{' + c1 + '}{2} = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
+		n = str(sympify(f' - {c2} / 2'))
+		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + c2 + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
+	elif diffType == 2: #гиперболический
+		v = c2
+		if v != 0:
+			if v[0] in ['+', '-']:
+				if v[0] == '+':
+					v = '-' + v[1:]
+				else:
+					v = '+' + v[1:]
+			else:
+				v = '-' + v[1:]
+		output += r'\lambda = - C_2 = ' + r'- ' + c2 + ' = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
+		n = c1
+		if n != 0:
+			if n[0] in ['+', '-']:
+				if n[0] == '+':
+					n = '-' + v[1:]
+				else:
+					n = '+' + v[1:]
+			else:
+				n = '-' + v[1:]
+		output += r'\mu = - C_1 = ' + r'- ' + c1 + ' = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
+	output += r'''\end{array}
+\right\rangle \) <br>'''
 	return output
