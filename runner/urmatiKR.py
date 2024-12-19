@@ -153,7 +153,7 @@ def urmatiKR(u):
 	A = [['0', '0'], ['0', '0']]
 	#A = [['-3•sqrt(2)-1', '1'], ['+3•sqrt(2)-1', '1']]
 	if diffType == 0: #параболический
-		f = y1.replace('*s', '•s')
+		f = refFractions(y1.replace('*s', '•s').replace('*x', '&x').replace('*y', '&y')).replace('&', '*')
 		for i in f.split():
 			if 'x' in i:
 				A[0][0] += i.split('*')[0]
@@ -190,8 +190,8 @@ def urmatiKR(u):
 		x, y = symbols('x y')
 		g = str(simplify(g))
 	elif diffType == 1: #эллиптический
-		f = ' '.join([i for i in y2.split() if not 'I' in i])
-		g = ' '.join(list(map(lambda g: g.replace('I*', ''), [i for i in y2.split() if 'I' in i])))
+		f = refFractions(' '.join([i for i in y2.split() if not 'I' in i]).replace('*x', '&x').replace('*y', '&y')).replace('&', '*')
+		g = refFractions(' '.join(list(map(lambda g: g.replace('I*', ''), [i for i in y2.split() if 'I' in i]))).replace('*x', '&x').replace('*y', '&y')).replace('&', '*')
 		for i in f.split():
 			if 'x' in i:
 				A[0][0] = i.split('*')[0].replace('+', '')
@@ -203,8 +203,8 @@ def urmatiKR(u):
 			else:
 				A[1][1] = i.split('*')[0].replace('+', '')
 	elif diffType == 2: #гиперболический
-		f = y1.replace('*s', '•s')
-		g = y2.replace('*s', '•s')
+		f = refFractions(y1.replace('*s', '•s'))
+		g = refFractions(y2.replace('*s', '•s'))
 		for i in f.split():
 			if 'x' in i:
 				A[0][0] += i.split('*')[0]
@@ -269,6 +269,7 @@ def urmatiKR(u):
 	newU = ''
 	for i in u_.split():
 		constant, function = i.split('&')
+		print(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt'))
 		newUNewElement = refBringSimilar(bringSimilar(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt')), False, True)
 		char = '+'
 		if newUNewElement[0] in ['+', '-']:
@@ -301,8 +302,9 @@ def urmatiKR(u):
 	if diffType == 0: #параболический
 		n = str(sympify(f' - {c2} / 2'))
 		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + c2 + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
-		v = str(sympify(f'({c2}**2)/(4*{c1}) - ({c3})/({c1})'))
-		output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + c2 + ')^2}{4*' + c1 + '} = ' + ref(refToMarkdown(v)) + '\n'
+		if c1 != '0':
+			v = str(sympify(f'({c2}**2)/(4*{c1}) - ({c3})/({c1})'))
+			output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + c2 + ')^2}{4*' + c1 + '} = ' + ref(refToMarkdown(v)) + '\n'
 	elif diffType == 1: #эллиптический
 		v = str(sympify(f' - {c1} / 2'))
 		output += r'\lambda = - \frac{C_1}{2} = ' + r'- \frac{' + c1 + '}{2} = ' + ref(refToMarkdown(v)) + r'\\' + '\n'

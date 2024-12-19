@@ -11,7 +11,7 @@ def refFractions(string):
 	digits = [str(i) for i in range(10)]
 	stringSplitted = string.replace('/d', 'od').split()
 	for i in range(len(stringSplitted)):
-		if 'oda/' in stringSplitted[i] or 'odb/' in stringSplitted[i] or 'odbdb/' in stringSplitted[i] or 'odada/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'u_/' in stringSplitted[i] or ('w/' in stringSplitted[i] and not 'dw/' in stringSplitted[i]):
+		if 'oda/' in stringSplitted[i] or 'odb/' in stringSplitted[i] or 'odbdb/' in stringSplitted[i] or 'odada/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'odadb/' in stringSplitted[i] or 'u_/' in stringSplitted[i] or ('w/' in stringSplitted[i] and not 'dw/' in stringSplitted[i]) or 'x/' in stringSplitted[i] or 'y/' in stringSplitted[i]:
 			parts = stringSplitted[i].split('/')
 			if '&' in parts[0]:
 				parts[0] = parts[0].split('&')

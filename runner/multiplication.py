@@ -28,5 +28,5 @@ def multi(func1, func2, flag=True):
 		result = result.replace('z', 'd').replace('*d', '&d').replace('*w', '&w')
 	if not result[0] in ['+', '-']:
 		result = '+' + result
-	result = result.replace('+d', '+1&d').replace('-d', '-1&d')
+	result = result.replace('+d', '+1&d').replace('-d', '-1&d').replace('+u', '+1&u').replace('-u', '-1&u').replace('+w', '+1&w').replace('-w', '-1&w')
 	return refFractions(result)
