@@ -2,7 +2,7 @@ import re
 from sympy import latex
 
 def ref(string):
-	string = string.replace(' ', '').replace('frac', '????').replace('+1&', '+&').replace('&', '*').replace('-+', '-').replace('+-', '-').replace('++', '+').replace('++', '+').replace('+*+', '*').replace(' -', ' - ').replace('+', ' + ').replace('du_du_', 'd^2u_').replace('dwdw', 'd^2w').replace('dw', 'd w').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', '\\gamma').replace(' *d', ' d').replace('*u', 'u').replace('u_', 'ū').replace('1*', '').replace('????', 'frac').replace('gαmmα', 'gamma').replace('d', '\partial').replace('pαrtiαl', 'partial').replace('*\\', '\\').replace('v*v', 'v^2').replace('n*n', 'n^2').replace('v', '\\lambda').replace('n', '\\mu')
+	string = string.replace(' ', '').replace('frac', '????').replace('+1&', '+&').replace('&', '*').replace('-+', '-').replace('+-', '-').replace('++', '+').replace('++', '+').replace('+*+', '*').replace(' -', ' - ').replace('+', ' + ').replace('du_du_', 'd^2u_').replace('dwdw', 'd^2w').replace('dw', 'd w').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', '\\gamma').replace(' *d', ' d').replace('*u', 'u').replace('u_', 'ū').replace('1*', '').replace('????', 'frac').replace('gαmmα', 'gamma').replace('d', '\partial').replace('pαrtiαl', 'partial').replace('*\\', '\\').replace('v*v', 'v^2').replace('n*n', 'n^2').replace('v', '\\lambda').replace('n', '\\mu').replace('+ *', '*').replace('1 *', '').replace('1ū', 'ū')
 	if string[:3] == ' + ':
 		string = string[3:]
 	return string

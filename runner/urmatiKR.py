@@ -235,9 +235,12 @@ def urmatiKR(u):
 	output += res[0].replace('(A^{-1})^{T}', 'A')
 	u_ = res[1]
 	constant = u_.split()[0].split("&")[0]
-	output += fr'\( \quad | \; : {constant} \) <br>'
-	u_ = refChangeFractions(refBringSimilar(bringSimilar(multi(u_, f'({constant})**-1').replace('sqrt', '•sqrt'))))
-	output += r'\(' + ref(refToMarkdown(u_)) + r' = 0 \) <br>'
+	if constant != '1':
+		output += fr'\( \quad | \; : {constant} \) <br>'
+		u_ = refChangeFractions(refBringSimilar(bringSimilar(multi(u_, f'({constant})**-1').replace('sqrt', '•sqrt').replace('••sqrt', '•sqrt'))))
+		output += r'\(' + ref(refToMarkdown(u_)) + r' = 0 \) <br>'
+	else:
+		output += '<br>'
 	constants = {
 		'du_/da': '',
 		'du_/db': '',
@@ -269,12 +272,13 @@ def urmatiKR(u):
 	newU = ''
 	for i in u_.split():
 		constant, function = i.split('&')
-		newUNewElement = refBringSimilar(bringSimilar(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt')), False, True)
+		newUNewElement = refBringSimilar(bringSimilar(multi(i.split('&')[0], replacements[function], False).replace('sqrt', '•sqrt').replace('(•sqrt', '(sqrt')), False, True)
 		char = '+'
 		if newUNewElement[0] in ['+', '-']:
 			char = newUNewElement[0]
 			newUNewElement = newUNewElement[1:]
 		newU += ' ' + char + newUNewElement
+	newU = newU.replace('••(sqrt(', '•(sqrt(')
 	newU = refChangeFractions(newU[1:].replace('v••2', 'v•v').replace('n••2', 'n•n').replace('•', '*'))
 	output += r'\( (' + ref(refToMarkdown(newU)) + r') * e^{\lambda \alpha + \mu \beta} = 0 \quad | \; : e^{\lambda \alpha + \mu \beta} \) <br>'
 	diffs = {
@@ -300,10 +304,10 @@ def urmatiKR(u):
 \begin{array}{c}'''
 	if diffType == 0: #параболический
 		n = str(sympify(f' - {c2} / 2'))
-		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + c2 + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
+		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + ref(refToMarkdown(c2)) + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
 		if c1 != '0':
 			v = str(sympify(f'({c2}**2)/(4*{c1}) - ({c3})/({c1})'))
-			output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + c2 + ')^2}{4*' + c1 + '} = ' + ref(refToMarkdown(v)) + '\n'
+			output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + ref(refToMarkdown(c2)) + ')^2}{4*' + ref(refToMarkdown(c1)) + '} = ' + ref(refToMarkdown(v)) + '\n'
 	elif diffType == 1: #эллиптический
 		v = str(sympify(f' - {c1} / 2'))
 		output += r'\lambda = - \frac{C_1}{2} = ' + r'- \frac{' + c1 + '}{2} = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
@@ -319,7 +323,7 @@ def urmatiKR(u):
 					v = '+' + v[1:]
 			else:
 				v = '-' + v[1:]
-		output += r'\lambda = - C_2 = ' + r'- ' + c2 + ' = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
+		output += r'\lambda = - C_2 = ' + r'- ' + ref(refToMarkdown(c2)) + ' = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
 		n = c1
 		if n != 0:
 			if n[0] in ['+', '-']:
@@ -329,7 +333,14 @@ def urmatiKR(u):
 					n = '+' + v[1:]
 			else:
 				n = '-' + v[1:]
-		output += r'\mu = - C_1 = ' + r'- ' + c1 + ' = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
+		output += r'\mu = - C_1 = ' + r'- ' + ref(refToMarkdown(c1)) + ' = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
 	output += r'''\end{array}
 \right\rangle \) <br>'''
+	dotFunc = lambda g: g.replace('•', '*')
+	v = dotFunc(v)
+	n = dotFunc(n)
+	newU = newU.replace('n', n).replace('v', v)
+	output += r'\( ' + ref(refToMarkdown(newU)) + r' = 0 \) <br>'
+	newU = refBringSimilar(bringSimilar(newU.replace(' ', '').replace('a', 'a ').replace('b', 'b ').replace('da da', 'dada').replace('db db', 'dbdb').replace('da db', 'dadb')), False, True)
+	output += r'\( ' + ref(refToMarkdown(newU)) + r' = 0 \) <br>'
 	return output

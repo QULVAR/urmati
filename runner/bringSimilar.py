@@ -6,7 +6,7 @@ def bringSimilar(expression):
     grouped_terms = {}
     for term in terms:
         coeff, variable = term.split('&')
-        coeff = sp.sympify(coeff.replace('•', '*').replace('+', ''))
+        coeff = sp.sympify(coeff.replace('•', '*'))
         if variable in grouped_terms:
             grouped_terms[variable] += coeff
         else:
