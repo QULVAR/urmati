@@ -31,7 +31,8 @@ def urmatiKR(u):
 		if 'dxdy' in diffU[i]:
 			diffU[i] = chars[diffU[i][0]] + diffU[i][1:]
 	diffU = ' '.join(diffU)
-	output += r'\( ' + diffU[1:diffU.find('(dx)^2') + 6].replace('*', '').replace('1(', '(').replace('1d', 'd').replace(a12, '') + r' = 0 \) <br>'
+	q = 1 if diffU[0] == '+' else 0
+	output += r'\( ' + diffU[q:diffU.find('(dx)^2') + 6].replace('*', '').replace('1(', '(').replace('1d', 'd') + r' = 0 \) <br>'
 	d = str(Fraction(a12)*Fraction(a12) - Fraction(a11) * Fraction(a21))
 	output += fr'\( d = {a12}^2 - {a11}*{a21} = '.replace('*+', '*')
 	if '/' in d:
@@ -89,12 +90,14 @@ def urmatiKR(u):
 		x1 = 'x=C'
 		output += 'x = C \\'
 	dy1ToY = ' '.join(map(lambda g: g + '*x', dy1.split()))
-	y1 = f'y={dy1ToY} +C'
-	output += ref(refToMarkdown(y1.replace(' ', '').replace('=', ' = ').replace('+', ' + ').replace('-', ' - '))).replace('I', '\mathit{i}') + r'\\'
+	y1 = f'{dy1ToY} +C'
+	output += 'y = ' + ref(refToMarkdown(y1.replace(' ', '').replace('=', ' = ').replace('+', ' + ').replace('-', ' - '))).replace('I', '\mathit{i}') + r'\\'
+	y1 = 'y=' + y1
 	if dy2 != -1:
 		dy2ToY = ' '.join(map(lambda g: g + '*x', dy2.split()))
-		y2 = f'y={dy2ToY} +C'
-		output += ref(refToMarkdown(y2.replace(' ', '').replace('=', ' = ').replace('+', ' + ').replace('-', ' - '))).replace('I', '\mathit{i}')
+		y2 = f'{dy2ToY} +C'
+		output += 'y = ' + ref(refToMarkdown(y2.replace(' ', '').replace('=', ' = ').replace('+', ' + ').replace('-', ' - '))).replace('I', '\mathit{i}')
+		y2 = 'y=' + y2
 	output += r'''\end{array}
 \right.
 \) <br><br>'''
