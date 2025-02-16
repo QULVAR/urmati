@@ -147,7 +147,7 @@ def urmatiKR(u):
 		y2 = y2.replace(' ', '').replace('-', ' -').replace('+', ' +').split()
 		for i in range(len(y2)):
 			if not y2[i][0] in ['+', '-']:
-				y2[i] = '+' + y2[i][0]
+				y2[i] = '+' + y2[i]
 			if not y2[i][1] in digits:
 				y2[i] = y2[i][0] + '1*' + y2[i][1:]
 		y2 = ' '.join(y2)
@@ -307,9 +307,13 @@ def urmatiKR(u):
 \begin{array}{c}'''
 	if diffType == 0: #параболический
 		n = str(sympify(f' - {c2} / 2'))
+		if n == '+' or n == '-':
+			n = '0'
 		output += r'\mu = - \frac{C_2}{2} = ' + r'- \frac{' + ref(refToMarkdown(c2)) + '}{2} = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
 		if c1 != '0':
 			v = str(sympify(f'({c2}**2)/(4*{c1}) - ({c3})/({c1})'))
+			if v == '+' or v == '-':
+				v = '0'
 			output += r'\lambda = \frac{C_2^2}{4C_1} - \frac{C_3}{C_1} = \frac{(' + ref(refToMarkdown(c2)) + ')^2}{4*' + ref(refToMarkdown(c1)) + '} = ' + ref(refToMarkdown(v)) + '\n'
 	elif diffType == 1: #эллиптический
 		v = str(sympify(f' - {c1} / 2'))
@@ -326,6 +330,8 @@ def urmatiKR(u):
 					v = '+' + v[1:]
 			else:
 				v = '-' + v[1:]
+		if v == '+' or v == '-':
+			v = '0'
 		output += r'\lambda = - C_2 = ' + r'- ' + ref(refToMarkdown(c2)) + ' = ' + ref(refToMarkdown(v)) + r'\\' + '\n'
 		n = c1
 		if n != 0:
@@ -336,9 +342,12 @@ def urmatiKR(u):
 					n = '+' + v[1:]
 			else:
 				n = '-' + v[1:]
+		if n == '+' or n == '-':
+			n = '0'
 		output += r'\mu = - C_1 = ' + r'- ' + ref(refToMarkdown(c1)) + ' = ' + ref(refToMarkdown(n)) + r'\\' + '\n'
 	output += r'''\end{array}
 \right\rangle \) <br>'''
+	
 	dotFunc = lambda g: g.replace('•', '*')
 	v = dotFunc(v)
 	n = dotFunc(n)
