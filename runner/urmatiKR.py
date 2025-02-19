@@ -208,8 +208,6 @@ def urmatiKR(u):
 	elif diffType == 2: #гиперболический
 		f = refFractions(y1.replace('*s', '•s'))
 		g = refFractions(y2.replace('*s', '•s'))
-		print(y1, y2)
-		print(f, g)
 		for i in f.split():
 			if 'x' in i:
 				A[0][0] += i.split('*')[0]
