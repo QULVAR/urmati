@@ -1,5 +1,6 @@
 import re
 from sympy import latex
+from sympy import sympify, symbols
 
 def ref(string):
 	string = string.replace(' ', '').replace('frac', '????').replace('+1&', '+&').replace('&', '*').replace('-+', '-').replace('+-', '-').replace('++', '+').replace('++', '+').replace('+*+', '*').replace(' -', ' - ').replace('+', ' + ').replace('du_du_', 'd^2u_').replace('dwdw', 'd^2w').replace('dw', 'd w').replace('dada', 'da^2').replace('dbdb', 'db^2').replace('dcdc', 'dc^2').replace('a', 'α').replace('b', 'β').replace('c', '\\gamma').replace(' *d', ' d').replace('*u', 'u').replace('u_', 'ū').replace('1*', '').replace('????', 'frac').replace('gαmmα', 'gamma').replace('d', '\partial').replace('pαrtiαl', 'partial').replace('*\\', '\\').replace('v*v', 'v^2').replace('n*n', 'n^2').replace('v', '\\lambda').replace('n', '\\mu').replace('+ *', '*').replace('1 *', '').replace('1ū', 'ū')
@@ -38,7 +39,10 @@ def refFractions(string):
 			if parts[0][0][0] in ['n', 'v']:
 				if '*' in parts[0][0]:
 					parts[0][0] = '*'.join(parts[0][0].split('*')[::-1])
-			stringSplitted[i] = char + parts[0][0] + '&' + parts[0][1]
+			if 'x' in parts[0][1] or 'y' in parts[0][1]:
+				stringSplitted[i] = char + parts[0][0] + '*' + parts[0][1]
+			else:
+				stringSplitted[i] = char + parts[0][0] + '&' + parts[0][1]
 	return ' '.join(stringSplitted).replace('o', '/')
 
 def refChangeFractions(string):
