@@ -41,7 +41,7 @@ def urmatiKR(u):
 		if numerator[0] == '-':
 			char = '-'
 			numerator = numerator[1:]
-		output += char + r'\frac{' + numerator + '}{' + denominator + '} \)'
+		output += char + r'\frac{' + numerator + '}{' + denominator + '}'
 	else:
 		output += fr'{d}'
 	diffType = -1

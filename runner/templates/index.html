@@ -8,105 +8,166 @@
     <script type="text/javascript" id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-        *{
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
         }
-        input,
-        form{
-            padding: 5px;
-            font-size: 15px;
+
+        #logout-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
         }
-        label{
-            margin-top: 7px;
-            margin-bottom: 3px;
+
+        #logout-button:hover {
+            background-color: #c82333;
+        }
+
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin-left: 15px; /* Добавляем этот отступ */
+        }
+
+        h1, h2 {
+            font-size: 20px;
+            margin: 0 0 10px;
+        }
+
+        h2 {
+            margin: 20px 0 5px 15px; /* Тот же отступ, что и у формы */
+        }
+
+        label {
             display: flex;
             align-items: center;
-            white-space: nowrap;
+            margin-bottom: 8px;
         }
-        input[type="radio"]{
+
+        input[type="radio"] {
             margin-right: 8px;
         }
-        label input[type="text"]{
-            width: 100%;
-            margin-left: 8px;
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
         }
-        label.hidden{
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 15px 0 0 0;
+            width: calc(100% - 30px);
+            margin-left: 15px;
+            min-height: 50px;
+            box-sizing: border-box;
+        }
+
+        .hidden {
             display: none !important;
-        }
-        button{
-            font-size: 16px;
-            padding: 5px 8px;
-        }
-        #result{
-            max-width: 100%;
-            overflow: auto;
         }
     </style>
 </head>
 <body>
+
+<button id="logout-button">Выйти</button>
+
+<div class="form-container">
     <h1>Приведение УЧП</h1>
     <form id="script-form">
         <label>
             <input type="radio" id="SR" name="mode" value="SR" checked="true">
             Самостоятельная
-        </label><br>
+        </label>
         <label>
             <input type="radio" id="KR" name="mode" value="KR">
             Контрольная
-        </label><br>
+        </label>
         <label>
             Условие:
             <input type="text" id="param1" name="param1" required placeholder="+1*uxx +2*uxy +2*uyy +4*uyz +5*uzz +1*ux +1*uy">
         </label>
-        <br>
         <label id="p2">
             Матрица A:
             <input type="text" id="param2" name="param2" placeholder="1 -3/2 0?0 1/2 2**0.5?0 0 1" required>
         </label>
-        <br><br>
         <button type="submit">Решить</button>
     </form>
+</div>
 
-    <h2>Решение</h2>
-    <div id="result"></div>
+<h2>Решение</h2>
+<div id="result"></div>
 
-    <script>
-        $('input[type="radio"]').on('click', function() {
-            if(this.id == 'SR' && this.checked){
-                $('#p2').removeClass('hidden');
-                $('#p2 input').attr('required', true);
-                $('#p2 input').val('');
-            } else {
-                $('#p2').addClass('hidden');
-                $('#p2 input').attr('required', false);
-                $('#p2 input').val('');
-            }
-        })
-        const form = document.getElementById('script-form');
-        const result = document.getElementById('result');
+<script>
+    $('input[type="radio"]').on('click', function() {
+        if (this.id === 'SR') {
+            $('#p2').removeClass('hidden');
+            $('#p2 input').attr('required', true);
+            $('#p2 input').val('');
+        } else {
+            $('#p2').addClass('hidden');
+            $('#p2 input').attr('required', false);
+            $('#p2 input').val('');
+        }
+    });
 
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
+    document.getElementById('logout-button').addEventListener('click', async () => {
+        document.cookie = 'sessionid=; Max-Age=-1; path=/'; // убиваем куку
+        await fetch('/logout/', { method: 'POST', headers: {'Content-Type': 'application/json'} });
+        window.location.href = '/login/';
+    });
 
-            const formData = new FormData(form);
-            const params = Object.fromEntries(formData.entries());
+    document.getElementById('script-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-            try {
-                const response = await fetch('/run-script/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params),
-                });
-                const data = await response.json();
-                document.getElementById('result').innerHTML = data.message;
-                MathJax.typesetPromise()
-                
-            } catch (error) {
-                result.textContent = `Error: ${error}`;
-            }
-        });
-    </script>
+        const formData = new FormData(event.target);
+        const params = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/run-script/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(params),
+            });
+
+            const data = await response.json();
+            document.getElementById('result').innerHTML = data.message;
+            MathJax.typesetPromise();
+        } catch (error) {
+            document.getElementById('result').textContent = `Error: ${error}`;
+        }
+    });
+</script>
+
 </body>
 </html>

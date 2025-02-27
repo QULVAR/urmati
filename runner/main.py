@@ -13,6 +13,7 @@ from .urmatiKR import urmatiKR
 
 def urmati(u, matrixInp, mode):
 	if mode == 'SR':
-		return urmatiSR(u, matrixInp)
+		return urmatiSR(u, matrixInp) 
 	elif mode == 'KR':
 		return urmatiKR(u)
+		

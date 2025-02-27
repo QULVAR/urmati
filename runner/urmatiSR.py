@@ -1,6 +1,6 @@
 from .matrix import matrixTrans, matrixPrint
 from .multiplication import multi
-from .сoeficient import getNums
+from .coeficient import getNums
 from .bringSimilar import bringSimilar
 from .refractor import ref, refBringSimilar, refToMarkdown
 
