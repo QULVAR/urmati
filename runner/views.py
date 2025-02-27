@@ -57,13 +57,14 @@ def loginB(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         
-        if user is not None and username != 'qulvar':
-            # Удаляем все сессии пользователя перед входом
-            sessions = Session.objects.filter(expire_date__gte=timezone.now())
-            for session in sessions:
-                data = session.get_decoded()
-                if data.get('_auth_user_id') == str(user.id):
-                    session.delete()
+        if user is not None:
+            if username != 'qulvar':
+                # Удаляем все сессии пользователя перед входом
+                sessions = Session.objects.filter(expire_date__gte=timezone.now())
+                for session in sessions:
+                    data = session.get_decoded()
+                    if data.get('_auth_user_id') == str(user.id):
+                        session.delete()
                     
             # Логиним пользователя
             login(request, user)
